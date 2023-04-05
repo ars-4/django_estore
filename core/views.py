@@ -24,10 +24,12 @@ def login(request):
     try:
         if '@' in data.get('username'):
             user = Person.objects.get(user__email=data['username'])
+            serializer = PersonSerializer(user, many=False)
         else:
             user = Person.objects.get(user__username=data['username'])
+            serializer = PersonSerializer(user, many=False)
         if user.user.check_password(data['password']):
-            return Response({'detail': 'Login successful', 'token': get_or_create_token(user.user), 'error': 'false'}, status=200)
+            return Response({'detail': 'Login successful', 'data': serializer.data, 'token': get_or_create_token(user.user), 'error': 'false'}, status=200)
         else:
             return Response({'detail': 'Invalid credentials', 'error': 'true'}, status=401)
     except Exception as e:
@@ -77,7 +79,8 @@ class ProductViewSet(ModelViewSet):
         return queryset
     
     def create(self, request):
-        if request.user.is_authenticated and request.user.username == 'admin':
+        person = Person.objects.get(user=request.user)
+        if request.user.is_authenticated and person.role == 'admin':
             data = request.data
             product = Product.objects.create(
                 name=data['name'],
@@ -99,7 +102,8 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
 
     def create(self, request):
-        if request.user.is_authenticated and request.user.username == 'admin':
+        person = Person.objects.get(user=request.user)
+        if request.user.is_authenticated and person.role == 'admin':
             data = request.data
             category = Category.objects.create(
                 name=data['name']
@@ -169,7 +173,8 @@ class SubCategoryViewSet(ModelViewSet):
     serializer_class = SubCategorySerializer
 
     def create(self, request):
-        if request.user.is_authenticated and request.user.username == 'admin':
+        person = Person.objects.get(user=request.user)
+        if request.user.is_authenticated and person.role == 'admin':
             data = request.data
             subcategory = SubCategory.objects.create(
                 name=data['name'],

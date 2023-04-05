@@ -16,6 +16,7 @@ class Person(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    role = models.CharField(max_length=255, null=True, default='customer')
     email = models.EmailField()
     # profile_image = models.ImageField(upload_to='profile_image', null=True)
     profile_image_url = models.CharField(max_length=255, null=True, default='')
