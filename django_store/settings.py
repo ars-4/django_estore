@@ -22,6 +22,7 @@ import os
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
+CSRF_TRUSTED_ORIGINS=["https://django-estore.up.railway.app"]
 
 if 'SECRET_KEY' in os.environ:
     SECRET_KEY = os.environ['SECRET_KEY']
